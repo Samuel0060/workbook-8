@@ -28,12 +28,10 @@ public class main {
 
 // 1. open a connection to the database
 // use the database URL to point to the correct database
-
+  Connection connection = null;
 
   try {
-   Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/northwind", username, password);
-
-
+   connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/northwind", username, password);
    int choice;
    do {
     displayHomeScreen();
@@ -42,17 +40,25 @@ public class main {
     switch (choice) {
      case 1:
       displayAllProducts(connection);
+      break;
      case 2:
       displayAllCustomers(connection);
+      break;
+     case 0:
+      System.out.println("Exiting database, goodbye!");
+      break;
      default:
       System.out.println("Please pick 1, 2, or 0");
     }
    } while (choice != 0);
   } catch (SQLException e) {
    e.printStackTrace();
+  } finally {
+   if (connection != null) connection.close();
   }
   scanner.close();
  }
+
 
 
  private static void displayAllProducts(Connection connection) {
@@ -96,13 +102,6 @@ public class main {
      e.printStackTrace();
     }
    }
-   if (connection != null) {
-    try {
-     connection.close();
-    } catch (SQLException e) {
-     e.printStackTrace();
-    }
-   }
   }
  }
 
@@ -113,18 +112,18 @@ public class main {
   try {
    preparedStatement = connection.prepareStatement("SELECT contactName, companyName, city, country, phone FROM customers ORDER BY country");
    results = preparedStatement.executeQuery();
-   System.out.printf("%-40s %-40s %-40s %-40s %-15s%n", "Contact Name", "Company Name", "City", "Country", "Phone Number");
-   System.out.println("------------------------------------------------------------------");
+   System.out.printf("%-25s %-30s %-20s %-20s %-20s%n", "Contact Name", "Company Name", "City", "Country", "Phone Number");
+   System.out.println("---------------------------------------------------------------------------------------------");
 
 // process the results
    while (results.next()) {
 
-    String contactName = results.getString("Contact Name");
-    String companyName = results.getString("Company Name");
+    String contactName = results.getString("ContactName");
+    String companyName = results.getString("CompanyName");
     String city = results.getString("City");
     String country = results.getString("Country");
-    String phoneNumber = results.getString("Phone Number");
-    System.out.printf("%-40s %-40s %-40s %-40s %-15s%n", contactName, companyName, city, country, phoneNumber);
+    String phoneNumber = results.getString("Phone");
+    System.out.printf("%-25s %-30s %-20s %-20s %-40s%n", contactName, companyName, city, country, phoneNumber);
    }
 
 // 2. Execute your query
@@ -142,13 +141,6 @@ public class main {
    if (preparedStatement != null) {
     try {
      preparedStatement.close();
-    } catch (SQLException e) {
-     e.printStackTrace();
-    }
-   }
-   if (connection != null) {
-    try {
-     connection.close();
     } catch (SQLException e) {
      e.printStackTrace();
     }
