@@ -44,6 +44,9 @@ public class main {
      case 2:
       displayAllCustomers(connection);
       break;
+     case 3:
+      displayCategories(connection);
+      break;
      case 0:
       System.out.println("Exiting database, goodbye!");
       break;
@@ -148,12 +151,52 @@ public class main {
   }
  }
 
+ private static void displayCategories(Connection connection) {
+  PreparedStatement preparedStatement = null;
+  ResultSet results = null;
+
+  try{
+  preparedStatement = connection.prepareStatement("SELECT * FROM categories");
+  results = preparedStatement.executeQuery();
+  System.out.printf("%-12s %-25s %-50s %-20s%n", "CategoryID", "CategoryName", "Description", "Picture");
+  System.out.println("-------------------------------------------------------------------------");
+
+  while(results.next()) {
+   int categoryID = results.getInt("CategoryID");
+   String categoryName = results.getString("CategoryName");
+   String description = results.getString("Description");
+   byte[] pictureData = results.getBytes("Picture");
+  }
+  } catch (SQLException e) {
+   e.printStackTrace();
+  } finally {
+// 3. Close the connection
+   if (results != null) {
+    try {
+     results.close();
+    } catch (SQLException e) {
+     e.printStackTrace();
+    }
+   }
+   if (preparedStatement != null) {
+    try {
+     preparedStatement.close();
+    } catch (SQLException e) {
+     e.printStackTrace();
+    }
+   }
+  }
+ }
+
+
+
 
  private static void displayHomeScreen() {
   System.out.println("""
           What do you want to do?
             1) Display all products
             2) Display all customers
+            3) Display all categories
             0) Exit
           Select an option:  
           """);
