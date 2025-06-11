@@ -156,7 +156,7 @@ public class main {
   ResultSet results = null;
 
   try{
-  preparedStatement = connection.prepareStatement("SELECT * FROM categories");
+  preparedStatement = connection.prepareStatement("SELECT * FROM categories ORDER BY categoryID");
   results = preparedStatement.executeQuery();
   System.out.printf("%-12s %-25s %-50s %-20s%n", "CategoryID", "CategoryName", "Description", "Picture");
   System.out.println("-------------------------------------------------------------------------");
@@ -166,6 +166,7 @@ public class main {
    String categoryName = results.getString("CategoryName");
    String description = results.getString("Description");
    byte[] pictureData = results.getBytes("Picture");
+   System.out.printf("%-12s %-25s %-50s %-20s%n", categoryID, categoryName, description, pictureData);
   }
   } catch (SQLException e) {
    e.printStackTrace();
