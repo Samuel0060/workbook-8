@@ -1,10 +1,10 @@
-package com.pluralsight;
+package com.pluralsight.model;
+
+import org.apache.commons.dbcp2.BasicDataSource;
 
 import java.sql.*;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.Scanner;
 
 import static javax.swing.UIManager.getInt;
@@ -28,10 +28,14 @@ public class main {
 
 // 1. open a connection to the database
 // use the database URL to point to the correct database
-  Connection connection = null;
+
+  BasicDataSource dataSource = new BasicDataSource();
+  dataSource.setUrl("jdbc:mysql://localhost:3306/Northwind");
+  dataSource.setUsername(username);
+  dataSource.setPassword(password);
 
   try {
-   connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/northwind", username, password);
+   Connection connection = dataSource.getConnection();
    int choice;
    do {
     displayHomeScreen();
